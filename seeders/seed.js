@@ -1,3 +1,10 @@
+/**
+ * @file seed.js
+ * @description Database seeder script.
+ * Populates the database with initial admin users, categories, products, and settings.
+ * Use with caution: 'sync({ force: true })' will wipe the existing database.
+ */
+
 import { User, Category, Product, Setting } from '../src/models/index.js';
 import { hashPassword } from '../src/utils/hash.utils.js';
 import sequelize from '../src/config/database.js';
@@ -9,18 +16,12 @@ const seed = async () => {
 
     // Create session table for AdminJS (connect-pg-simple)
     await sequelize.query(`
+      DROP TABLE IF EXISTS "session" CASCADE;
       CREATE TABLE IF NOT EXISTS "session" (
-        "sid" varchar NOT NULL COLLATE "default",
+        "sid" varchar NOT NULL PRIMARY KEY COLLATE "default",
         "sess" json NOT NULL,
         "expire" timestamp(6) NOT NULL
       ) WITH (OIDS=FALSE);
-      
-      DO $$
-      BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'session_pkey') THEN
-          ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
-        END IF;
-      END $$;
       
       CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire");
     `);

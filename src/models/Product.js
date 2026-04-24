@@ -1,6 +1,7 @@
 /**
  * @file Product.js
  * @description Sequelize model for the `products` table.
+ * Represents items available for purchase in the eCommerce system.
  */
 
 import { DataTypes, Model } from 'sequelize';

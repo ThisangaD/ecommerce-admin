@@ -1,6 +1,7 @@
 /**
  * @file Category.js
  * @description Sequelize model for the `categories` table.
+ * Used to group products into logical sections.
  */
 
 import { DataTypes, Model } from 'sequelize';

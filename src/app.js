@@ -1,3 +1,9 @@
+/**
+ * @file app.js
+ * @description Main entry point for the eCommerce Admin Dashboard application.
+ * Configures Express, Sequelize, and AdminJS with Role-Based Access Control.
+ */
+
 import express from 'express';
 import AdminJS from 'adminjs';
 import AdminJSExpress from '@adminjs/express';
@@ -40,24 +46,29 @@ AdminJS.registerAdapter(AdminJSSequelize);
 
 const PORT = process.env.PORT || 3000;
 
+/**
+ * Starts the Express server and initializes AdminJS.
+ */
 const start = async () => {
   const app = express();
   app.use(express.json());
 
-  // Database Connection
+  // --- Database Connection & Synchronization ---
   try {
     await sequelize.authenticate();
     console.log('Database connection has been established successfully.');
-    // Sync models
+    
+    // Synchronize models with the database
+    // In production, migrations are preferred over 'alter: true'
     await sequelize.sync({ alter: true });
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
 
-  // API Routes
+  // --- REST API Routes ---
   app.use('/api', authRoutes);
 
-  // AdminJS Setup
+  // --- AdminJS Configuration ---
   const adminOptions = {
     resources: [
       UserResource,
@@ -86,7 +97,10 @@ const start = async () => {
 
   const admin = new AdminJS(adminOptions);
 
+  // --- Session Store & Authentication ---
   const PgSession = ConnectPgSimple(session);
+  
+  // Build the AdminJS router with authentication
   const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
     admin,
     {
@@ -113,11 +127,13 @@ const start = async () => {
     }
   );
 
+  // Mount AdminJS to the app
   app.use(admin.options.rootPath, adminRouter);
 
+  // Start the server
   app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-    console.log(`AdminJS is available on http://localhost:${PORT}${admin.options.rootPath}`);
+    console.log(`\n🚀 Server is running on http://localhost:${PORT}`);
+    console.log(`📊 AdminJS is available on http://localhost:${PORT}${admin.options.rootPath}\n`);
   });
 };
 

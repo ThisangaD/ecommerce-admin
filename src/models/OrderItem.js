@@ -1,6 +1,7 @@
 /**
  * @file OrderItem.js
  * @description Sequelize model for the `order_items` table.
+ * Acts as a junction between Orders and Products, capturing snapshots of price at purchase.
  */
 
 import { DataTypes, Model } from 'sequelize';

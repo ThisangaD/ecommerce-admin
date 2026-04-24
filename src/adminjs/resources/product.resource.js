@@ -1,3 +1,8 @@
+/**
+ * @file product.resource.js
+ * @description AdminJS resource configuration for the Product model.
+ */
+
 import { Product } from '../../models/index.js';
 
 export const ProductResource = {

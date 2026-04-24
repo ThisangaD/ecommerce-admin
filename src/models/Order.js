@@ -1,6 +1,7 @@
 /**
  * @file Order.js
  * @description Sequelize model for the `orders` table.
+ * Records customer purchases and their current fulfillment status.
  */
 
 import { DataTypes, Model } from 'sequelize';

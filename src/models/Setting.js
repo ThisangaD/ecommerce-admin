@@ -1,6 +1,7 @@
 /**
  * @file Setting.js
  * @description Sequelize model for the `settings` table.
+ * Stores global application configuration settings.
  */
 
 import { DataTypes, Model } from 'sequelize';
