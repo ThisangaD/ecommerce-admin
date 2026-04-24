@@ -1,7 +1,7 @@
 {
-  "name": "interview-project",
+  "name": "ecommerce-admin",
   "version": "1.0.0",
-  "description": "",
+  "description": "Role-Based eCommerce Admin Dashboard with AdminJS, Sequelize, and PostgreSQL",
   "main": "index.js",
   "scripts": {
     "start": "node src/app.js",
@@ -32,10 +32,8 @@
     "express-formidable": "^1.2.0",
     "express-session": "^1.19.0",
     "jsonwebtoken": "^9.0.3",
-    "lucide-react": "^1.9.0",
     "pg": "^8.20.0",
     "pg-hstore": "^2.3.4",
-    "recharts": "^3.8.1",
     "sequelize": "^6.37.8"
   },
   "devDependencies": {

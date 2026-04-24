@@ -1,3 +1,10 @@
+/**
+ * @file auth.routes.js
+ * @description REST API authentication routes.
+ * Provides the POST /api/login endpoint for user authentication
+ * and JWT token generation.
+ */
+
 import { Router } from 'express';
 import { User } from '../models/index.js';
 import { comparePassword } from '../utils/hash.utils.js';
@@ -5,6 +12,18 @@ import { signToken } from '../utils/jwt.utils.js';
 
 const router = Router();
 
+/**
+ * POST /api/login
+ * Authenticates a user and returns a signed JWT token.
+ *
+ * @body {string} email    - User's email address
+ * @body {string} password - User's plaintext password
+ *
+ * @returns {200} { token, user: { id, name, email, role } }
+ * @returns {400} If email or password is missing
+ * @returns {401} If credentials are invalid
+ * @returns {500} On internal server error
+ */
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;

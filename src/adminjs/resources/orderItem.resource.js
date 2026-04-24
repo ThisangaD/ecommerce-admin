@@ -1,3 +1,9 @@
+/**
+ * @file orderItem.resource.js
+ * @description AdminJS resource configuration for the OrderItem model.
+ * Visible to all users, but only admins can create, edit, or delete order items.
+ */
+
 import { OrderItem } from '../../models/index.js';
 
 export const OrderItemResource = {

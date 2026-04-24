@@ -1,3 +1,9 @@
+/**
+ * @file category.resource.js
+ * @description AdminJS resource configuration for the Category model.
+ * Visible to all users, but only admins can create, edit, or delete categories.
+ */
+
 import { Category } from '../../models/index.js';
 
 export const CategoryResource = {
