@@ -8,6 +8,7 @@ import { Setting } from '../../models/index.js';
 export const SettingResource = {
   resource: Setting,
   options: {
+    navigation: { name: 'System', icon: 'Database' },
     /**
      * RBAC: Settings are for system-wide configuration, accessible only by admins.
      */

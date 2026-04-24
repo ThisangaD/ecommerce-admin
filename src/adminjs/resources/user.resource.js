@@ -9,6 +9,7 @@ import { User } from '../../models/index.js';
 export const UserResource = {
   resource: User,
   options: {
+    navigation: { name: 'User Management', icon: 'User' },
     properties: {
       password: {
         isVisible: false,
