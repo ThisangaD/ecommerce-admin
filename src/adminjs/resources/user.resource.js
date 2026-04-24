@@ -9,7 +9,6 @@ import { User } from '../../models/index.js';
 export const UserResource = {
   resource: User,
   options: {
-    navigation: { name: 'User Management', icon: 'User' },
     properties: {
       password: {
         isVisible: false,
@@ -18,13 +17,11 @@ export const UserResource = {
     /**
      * RBAC: Only admins can manage or see the Users table.
      */
-    actions: {
-      list: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
-      show: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
-      new: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
-      edit: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
-      delete: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
-      bulkDelete: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
+    isAccessible: ({ currentAdmin }) => {
+      return currentAdmin && currentAdmin.role === 'admin';
+    },
+    isVisible: ({ currentAdmin }) => {
+      return currentAdmin && currentAdmin.role === 'admin';
     },
   },
 };
