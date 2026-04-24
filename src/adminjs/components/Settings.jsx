@@ -1,54 +1,80 @@
-import React, { useState, useEffect } from 'react';
-import { Box, H1, Text, Button, Input, Label, Section, ApiClient } from '@adminjs/design-system';
+/**
+ * @file Settings.jsx
+ * @description Modern Settings page for AdminJS.
+ */
 
-const api = new ApiClient();
+import React from 'react';
+import { Box, H2, Text, Button, Icon, Input, Label, FormGroup } from '@adminjs/design-system';
+import { useCurrentAdmin } from 'adminjs';
 
-const Settings = (props) => {
-  const [settings, setSettings] = useState([]);
-  const [loading, setLoading] = useState(true);
+const Settings = () => {
+  const [currentAdmin] = useCurrentAdmin();
 
-  useEffect(() => {
-    fetchSettings();
-  }, []);
-
-  const fetchSettings = async () => {
-    try {
-      const response = await api.resourceAction({
-        resourceId: 'Setting',
-        actionName: 'list',
-      });
-      setSettings(response.data.records);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching settings:', error);
-      setLoading(false);
-    }
-  };
-
-  if (loading) return <Box>Loading...</Box>;
+  if (currentAdmin?.role !== 'admin') {
+    return (
+      <Box padding="xl" style={{ textAlign: 'center', marginTop: '50px' }}>
+        <H2 color="error">Access Denied</H2>
+        <Text>You do not have permission to view or modify system settings.</Text>
+      </Box>
+    );
+  }
 
   return (
-    <Box variant="grey" padding="xl">
-      <Box variant="white" padding="xl" marginBottom="xl">
-        <H1>System Settings</H1>
-        <Text>Configure your eCommerce system</Text>
+    <Box 
+      padding={['medium', 'large', 'xl']} 
+      style={{ background: '#F9FAFB', minHeight: '100vh' }}
+    >
+      <Box 
+        style={{
+          background: 'white',
+          borderRadius: '16px',
+          padding: '40px',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          maxWidth: '800px',
+          margin: '0 auto',
+          border: '1px solid #E5E7EB',
+        }}
+      >
+        <Box 
+          style={{
+            borderBottom: '2px solid #F3F4F6',
+            paddingBottom: '24px',
+            marginBottom: '32px',
+          }}
+        >
+          <H2 style={{ fontWeight: '700' }}>System Settings</H2>
+          <Text color="#6B7280" marginTop="xs">Configure your store's global parameters and preferences.</Text>
+        </Box>
+
+        <Box>
+          <FormGroup>
+            <Label>Store Name</Label>
+            <Input defaultValue="My Awesome Store" width="100%" />
+          </FormGroup>
+
+          <FormGroup style={{ marginTop: '24px' }}>
+            <Label>Currency</Label>
+            <Input defaultValue="USD" width="100%" />
+          </FormGroup>
+
+          <FormGroup style={{ marginTop: '24px' }}>
+            <Label>Support Email</Label>
+            <Input defaultValue="support@example.com" width="100%" />
+          </FormGroup>
+
+          <Box flex justifyContent="flex-end" marginTop="32px">
+            <Button variant="primary" size="lg" onClick={(e) => e.preventDefault()}>
+              <Icon icon="Checkmark" />
+              Save Settings
+            </Button>
+          </Box>
+        </Box>
       </Box>
 
-      <Box variant="white" padding="xl">
-        {settings.map((record) => (
-          <Box key={record.id} marginBottom="lg" borderBottom="1px solid #eee" paddingBottom="md">
-            <Label>{record.params.key}</Label>
-            <Text color="grey60">{record.params.description}</Text>
-            <Input 
-              value={record.params.value} 
-              readOnly 
-              style={{ marginTop: '8px', background: '#f9f9f9' }}
-            />
-            <Text size="sm" color="grey40" marginTop="sm">
-              Use the Setting resource to edit this value.
-            </Text>
-          </Box>
-        ))}
+      <Box marginTop="xl" textAlign="center">
+        <Text color="#9CA3AF" fontSize="sm">
+          Tip: These settings apply to all users across the platform.
+        </Text>
       </Box>
     </Box>
   );

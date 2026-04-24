@@ -9,15 +9,18 @@ import { OrderItem } from '../../models/index.js';
 export const OrderItemResource = {
   resource: OrderItem,
   options: {
+    navigation: { name: 'Sales', icon: 'List' },
     actions: {
+      list: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
+      show: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
       new: {
-        isAccessible: ({ currentAdmin }) => currentAdmin.role === 'admin',
+        isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
       edit: {
-        isAccessible: ({ currentAdmin }) => currentAdmin.role === 'admin',
+        isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
       delete: {
-        isAccessible: ({ currentAdmin }) => currentAdmin.role === 'admin',
+        isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
     },
   },
