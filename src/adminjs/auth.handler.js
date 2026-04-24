@@ -1,7 +1,7 @@
 import { User } from '../models/index.js';
 import { comparePassword } from '../utils/hash.utils.js';
 
-export const adminAuthenticate = async ({ email, password }) => {
+export const adminAuthenticate = async (email, password) => {
   try {
     const user = await User.findOne({ where: { email } });
     if (!user) return null;
