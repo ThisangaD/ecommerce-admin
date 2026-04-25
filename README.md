@@ -1,178 +1,131 @@
-# 🛒 Role-Based eCommerce Admin Dashboard
+<div align="center">
+  <img src="public/logo.png" alt="Premium Admin Logo" width="200" style="margin-bottom: 20px;"/>
+  <h1>🛒 Premium eCommerce Admin Dashboard</h1>
+  <p>
+    <strong>A high-performance, responsive, and secure role-based administration panel.</strong><br>
+    <em>Built with AdminJS, Express, PostgreSQL, and beautifully styled with custom React components.</em>
+  </p>
 
-A secure, role-based admin panel for an eCommerce backend built with **AdminJS**, **Sequelize**, **PostgreSQL**, **Node.js**, and **Express**.
+  [![Node.js](https://img.shields.io/badge/Node.js-v18+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+  [![Express](https://img.shields.io/badge/Express.js-Backend-000000?logo=express&logoColor=white)](https://expressjs.com/)
+  [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+  [![AdminJS](https://img.shields.io/badge/AdminJS-Dashboard-4F46E5?logo=react&logoColor=white)](https://adminjs.co/)
+  [![License](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
+</div>
 
-## 📋 Features
+<br>
 
-- **JWT Authentication** — Secure login with bcrypt password hashing and JWT session handling.
-- **Role-Based Access Control (RBAC)** — Admins get full access; Regular users see restricted views.
-- **AdminJS Integration** — Auto-generated admin UI with custom Dashboard and Settings pages.
-- **6 Database Models** — User, Category, Product, Order, OrderItem, and Setting with proper associations.
-- **Custom Dashboard** — Real-time system summary with total users, orders, products, and revenue.
-- **Custom Settings Page** — Key-value configuration management for admins.
+## ✨ Key Features
 
-## 🛠️ Tech Stack
+- **🎨 Premium UI & Responsive Design** — Custom glassmorphism-inspired dashboards, circuit-board animated login screens, and fluid scaling for desktop, tablet, and mobile devices.
+- **🔐 JWT & Session Security** — Industry-standard `bcrypt` hashing, secure JWT endpoints, and robust session handling via `connect-pg-simple`.
+- **🛡️ Strict Role-Based Access Control (RBAC)** — Comprehensive permission rules. Admins have omnipotent control, while standard users experience a restricted, secure, read-only ecosystem tailored to their own data.
+- **📊 Real-Time Analytics Dashboard** — A custom-built React dashboard displaying dynamic sales overview charts, order status distributions, and revenue calculations.
+- **⚙️ Dynamic System Settings** — A dedicated configuration tab allowing admins to manage global application variables effortlessly.
 
-| Layer | Technology |
-|-------|-----------|
-| Runtime | Node.js (v18+) |
-| Framework | Express.js |
-| ORM | Sequelize v6 |
-| Database | PostgreSQL |
-| Admin UI | AdminJS v7 |
-| Auth | JWT + bcrypt |
-| Session | connect-pg-simple |
+---
 
-## 🗂️ Project Structure
+## 🛠️ Technology Stack
 
-```
-ecommerce-admin/
-├── src/
-│   ├── config/
-│   │   └── database.js              # Sequelize connection
-│   ├── models/
-│   │   ├── index.js                 # Model registry & associations
-│   │   ├── User.js
-│   │   ├── Category.js
-│   │   ├── Product.js
-│   │   ├── Order.js
-│   │   ├── OrderItem.js
-│   │   └── Setting.js
-│   ├── routes/
-│   │   └── auth.routes.js           # /api/login endpoint
-│   ├── adminjs/
-│   │   ├── auth.handler.js          # AdminJS authentication logic
-│   │   ├── resources/               # AdminJS resource configurations
-│   │   │   ├── user.resource.js
-│   │   │   ├── category.resource.js
-│   │   │   ├── product.resource.js
-│   │   │   ├── order.resource.js
-│   │   │   ├── orderItem.resource.js
-│   │   │   └── setting.resource.js
-│   │   └── components/
-│   │       ├── Dashboard.jsx        # Custom dashboard page
-│   │       └── Settings.jsx         # Custom settings page
-│   ├── utils/
-│   │   ├── hash.utils.js            # bcrypt helpers
-│   │   └── jwt.utils.js             # JWT helpers
-│   └── app.js                       # Express + AdminJS entry point
-├── seeders/
-│   └── seed.js                      # Database seed script
-├── .env.example
-├── .gitignore
-├── package.json
-└── README.md
-```
+| Layer | Technology | Description |
+|-------|-----------|-------------|
+| **Runtime** | Node.js (v18+) | Core JavaScript runtime |
+| **Framework** | Express.js | Lightweight backend web framework |
+| **ORM** | Sequelize v6 | Promise-based Node.js ORM |
+| **Database** | PostgreSQL | Robust relational database |
+| **Admin UI** | AdminJS v7 | Auto-generated & heavily customized React panel |
+| **Auth** | JWT + bcrypt | Token-based API auth and password hashing |
+
+---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
-- Node.js v18+
-- PostgreSQL installed and running
+- Node.js `v18.x` or higher
+- PostgreSQL installed and running on your local machine
 
 ### Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/ThisangaD/ecommerce-admin.git
-cd ecommerce-admin
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/ThisangaD/ecommerce-admin.git
+   cd ecommerce-admin
+   ```
 
-# Install dependencies
-npm install
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-# Create the database
-psql -U postgres -c "CREATE DATABASE ecommerce_admin;"
+3. **Setup the Database:**
+   Ensure your local PostgreSQL server is running, then create the database:
+   ```bash
+   psql -U postgres -c "CREATE DATABASE ecommerce_admin;"
+   ```
 
-# Configure environment variables
-cp .env.example .env
-# Edit .env with your PostgreSQL credentials
+4. **Environment Configuration:**
+   Create a `.env` file from the example template and fill in your database credentials:
+   ```bash
+   cp .env.example .env
+   ```
 
-# Seed the database
-npm run seed
+5. **Seed Initial Data:**
+   Populate the database with sample users, products, and orders:
+   ```bash
+   npm run seed
+   ```
 
-# Start the development server
-npm run dev
-```
+6. **Ignite the Server:**
+   ```bash
+   npm run dev
+   ```
+   > 🌐 Application will be running at `http://localhost:3000/admin`
 
-### Available Scripts
+---
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server with nodemon |
-| `npm start` | Start production server |
-| `npm run seed` | Seed the database with sample data |
-
-## 🔐 Authentication
-
-### API Login
-
-```
-POST /api/login
-Content-Type: application/json
-
-{
-  "email": "admin@example.com",
-  "password": "admin123"
-}
-```
+## 🔑 Authentication & Testing
 
 ### Default Credentials
+Upon seeding, the following accounts are available for testing RBAC features:
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@example.com | admin123 |
-| User | user@example.com | user123 |
+| Role | Email | Password | Access Level |
+|------|-------|----------|--------------|
+| **Admin** | `admin@example.com` | `admin123` | Full Access & Analytics |
+| **User** | `user@example.com` | `user123` | Personal Dashboard & Read-only Data |
 
-## 🛡️ Role-Based Access Control
+---
 
-| Feature | Admin | Regular User |
-|---------|:-----:|:------------:|
-| View Users table | ✅ | ❌ |
-| View Settings table | ✅ | ❌ |
-| View Products | ✅ | ✅ (read-only) |
-| View Categories | ✅ | ✅ (read-only) |
-| View Orders | ✅ (all) | ✅ (own only) |
-| Create/Edit/Delete | ✅ | ❌ |
-| Full Dashboard | ✅ | Limited |
+## 📁 Project Architecture
 
-## 📊 Database Schema
-
-### Model Relationships
-
-- `User` **has many** `Order`
-- `Order` **belongs to** `User`
-- `Category` **has many** `Product`
-- `Product` **belongs to** `Category`
-- `Order` **has many** `OrderItem`
-- `OrderItem` **belongs to** `Order`
-- `OrderItem` **belongs to** `Product`
-
-## 🌐 Environment Variables
-
-```env
-PORT=3000
-NODE_ENV=development
-DB_NAME=ecommerce_admin
-DB_USER=postgres
-DB_PASSWORD=your_password
-DB_HOST=localhost
-DB_PORT=5432
-JWT_SECRET=your-secret-key
-JWT_EXPIRY=24h
-SESSION_SECRET=your-session-secret
+```
+ecommerce-admin/
+├── public/                  # Static assets (Custom CSS, Logos)
+├── src/
+│   ├── adminjs/
+│   │   ├── components/      # Custom React UI (Dashboard, Login, Settings)
+│   │   ├── resources/       # AdminJS schema definitions & RBAC
+│   │   └── auth.handler.js  # Authentication middleware
+│   ├── config/              # Sequelize DB connection
+│   ├── models/              # Sequelize Data Models
+│   ├── routes/              # Express API Routes
+│   ├── utils/               # JWT & Hashing helpers
+│   └── app.js               # Main Application Bootstrap
+├── seeders/                 # Database initialization scripts
+└── package.json
 ```
 
-## 📝 Git Branch Strategy
+---
 
-This project follows a clean commit history using **Conventional Commits**:
+## 🤝 Contribution Guidelines
 
-- `feat:` — New features
-- `fix:` — Bug fixes
-- `chore:` — Maintenance tasks
-- `config:` — Configuration changes
-- `style:` — Code style improvements
+This project maintains a clean, readable Git history using **Conventional Commits**:
+- `feat:` — Introduces a new feature to the codebase
+- `fix:` — Patches a bug in the codebase
+- `style:` — Code formatting and UI aesthetic changes
+- `chore:` — Routine tasks, dependency updates, and maintenance
 
-## 📄 License
+---
 
-ISC
+<div align="center">
+  <p>Built with ❤️ for modern eCommerce management.</p>
+</div>
