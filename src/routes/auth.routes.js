@@ -8,7 +8,7 @@
 import { Router } from 'express';
 import { User, Setting } from '../models/index.js';
 import { comparePassword } from '../utils/hash.utils.js';
-import { signToken } from '../utils/jwt.utils.js';
+import { signToken, verifyToken } from '../utils/jwt.utils.js';
 
 const router = Router();
 
@@ -59,8 +59,30 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// GET /api/settings — fetch all settings (admin only via AdminJS session; no JWT needed here)
-router.get('/settings', async (req, res) => {
+/**
+ * Middleware to verify JWT and ensure the user is an admin.
+ */
+const requireAdmin = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Unauthorized: No token provided.' });
+  }
+
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = verifyToken(token);
+    if (decoded.role !== 'admin') {
+      return res.status(403).json({ message: 'Forbidden: Admin access required.' });
+    }
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Unauthorized: Invalid or expired token.' });
+  }
+};
+
+// GET /api/settings — fetch all settings (admin only)
+router.get('/settings', requireAdmin, async (req, res) => {
   try {
     const settings = await Setting.findAll({ order: [['key', 'ASC']] });
     res.json(settings);
@@ -70,8 +92,8 @@ router.get('/settings', async (req, res) => {
   }
 });
 
-// PUT /api/settings/:key — update a single setting value
-router.put('/settings/:key', async (req, res) => {
+// PUT /api/settings/:key — update a single setting value (admin only)
+router.put('/settings/:key', requireAdmin, async (req, res) => {
   try {
     const { key } = req.params;
     const { value } = req.body;

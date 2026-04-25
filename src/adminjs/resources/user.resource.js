@@ -19,13 +19,34 @@ export const UserResource = {
      * RBAC: Only admins can manage or see the Users table.
      */
     actions: {
-      list: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
-      show: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
-      new: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
-      edit: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
-      delete: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
-      bulkDelete: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
-      search: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' }
+      list: {
+        isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin'
+      },
+      show: {
+        isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin'
+      },
+      new: {
+        isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin'
+      },
+      edit: {
+        isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin'
+      },
+      delete: {
+        isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin'
+      },
+      bulkDelete: {
+        isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin'
+      },
+      search: {
+        isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin'
+      }
     },
   },
 };
