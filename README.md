@@ -6,7 +6,7 @@
     <em>Built with AdminJS, Express, PostgreSQL, and beautifully styled with custom React components.</em>
   </p>
 
-  [![Node.js](https://img.shields.io/badge/Node.js-v18+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+  [![Node.js](https://img.shields.io/badge/Node.js-v20+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
   [![Express](https://img.shields.io/badge/Express.js-Backend-000000?logo=express&logoColor=white)](https://expressjs.com/)
   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
   [![AdminJS](https://img.shields.io/badge/AdminJS-Dashboard-4F46E5?logo=react&logoColor=white)](https://adminjs.co/)
@@ -29,7 +29,7 @@
 
 | Layer | Technology | Description |
 |-------|-----------|-------------|
-| **Runtime** | Node.js (v18+) | Core JavaScript runtime |
+| **Runtime** | Node.js (v20+) | Core JavaScript runtime |
 | **Framework** | Express.js | Lightweight backend web framework |
 | **ORM** | Sequelize v6 | Promise-based Node.js ORM |
 | **Database** | PostgreSQL | Robust relational database |
@@ -41,7 +41,7 @@
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js `v18.x` or higher
+- Node.js `v20.x` or higher
 - PostgreSQL installed and running on your local machine
 
 ### Installation
