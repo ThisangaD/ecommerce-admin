@@ -8,11 +8,17 @@ import { Setting } from '../../models/index.js';
 export const SettingResource = {
   resource: Setting,
   options: {
-    navigation: { name: 'System', icon: 'Database' },
     /**
-     * RBAC: Settings are for system-wide configuration, accessible only by admins.
+     * Hide from sidebar — the custom Settings page (Settings.jsx) handles the UI.
+     * The resource is still registered so the backend API endpoints remain functional.
      */
-    isAccessible: ({ currentAdmin }) => currentAdmin && currentAdmin.role === 'admin',
-    isVisible: ({ currentAdmin }) => currentAdmin && currentAdmin.role === 'admin',
+    navigation: false,
+    actions: {
+      list: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
+      show: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
+      new: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
+      edit: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
+      delete: { isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin' },
+    },
   },
 };

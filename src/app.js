@@ -57,6 +57,9 @@ const start = async () => {
     await sequelize.authenticate();
     console.log('Database connection has been established successfully.');
     await sequelize.sync();
+
+    // Serve static files from public directory
+    app.use(express.static(path.join(__dirname, '../public')));
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
@@ -175,26 +178,30 @@ const start = async () => {
       SettingResource,
     ],
     branding: {
-      companyName: 'Admin Dashboard',
+      companyName: 'SHOP ADMIN',
       softwareBrothers: false,
+      withMadeWithLove: false,
       theme: {
         colors: {
           primary100: '#4F46E5', // Indigo 600
-          hoverBg: '#4338CA',
-          bg: '#F9FAFB',
-          text: '#111827',
+          hoverBg: '#F8FAFC',
+          bg: '#F8FAFC',
+          text: '#1E293B',
           sidebar: '#FFFFFF',
-          border: '#E5E7EB',
+          border: '#F1F5F9',
         },
         shadows: {
-          card: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+          card: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
         },
         borderRadius: {
-          card: '12px',
-          button: '8px',
-          input: '8px',
+          card: '16px',
+          button: '10px',
+          input: '10px',
         },
       },
+    },
+    assets: {
+      styles: ['/admin-custom.css'],
     },
     rootPath: '/admin',
     dashboard: {
@@ -205,6 +212,7 @@ const start = async () => {
         component: Components.Settings,
         icon: 'Settings',
         navigation: { name: 'System', icon: 'Settings' },
+        isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
     },
     locale: {
