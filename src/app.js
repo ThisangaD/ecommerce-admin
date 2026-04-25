@@ -27,7 +27,7 @@ import { OrderItemResource } from './adminjs/resources/orderItem.resource.js';
 import { SettingResource } from './adminjs/resources/setting.resource.js';
 
 import { adminAuthenticate } from './adminjs/auth.handler.js';
-import authRoutes, { requireAdmin } from './routes/auth.routes.js';
+import authRoutes, { requireAdmin, requireAuth } from './routes/auth.routes.js';
 
 dotenv.config();
 
@@ -92,11 +92,16 @@ const start = async () => {
   app.use('/api', authRoutes);
 
   // User Dashboard Route — returns recent orders for a specific user
-  app.get('/api/user-dashboard', requireAdmin, async (req, res) => {
+  app.get('/api/user-dashboard', requireAuth, async (req, res) => {
     try {
       const userId = req.query.userId;
       if (!userId) {
         return res.status(400).json({ error: 'userId is required' });
+      }
+
+      // Security Check: Regular users can only see their own dashboard
+      if (req.user.role !== 'admin' && String(req.user.id) !== String(userId)) {
+        return res.status(403).json({ error: 'Forbidden: You can only access your own dashboard.' });
       }
 
       const user = await User.findByPk(userId, {

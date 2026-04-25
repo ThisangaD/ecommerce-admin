@@ -91,6 +91,33 @@ export const requireAdmin = (req, res, next) => {
   return res.status(401).json({ message: 'Unauthorized: Authentication required.' });
 };
 
+/**
+ * Middleware to verify any authenticated user (admin or regular user).
+ */
+export const requireAuth = (req, res, next) => {
+  // 1. JWT Check
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1];
+    try {
+      const decoded = verifyToken(token);
+      req.user = decoded;
+      return next();
+    } catch (error) {
+      return res.status(401).json({ message: 'Unauthorized: Invalid token.' });
+    }
+  }
+
+  // 2. Session Check
+  const sessionUser = req.session?.adminUser;
+  if (sessionUser) {
+    req.user = sessionUser;
+    return next();
+  }
+
+  return res.status(401).json({ message: 'Unauthorized: Authentication required.' });
+};
+
 // GET /api/settings — fetch all settings (admin only)
 router.get('/settings', requireAdmin, async (req, res) => {
   try {
