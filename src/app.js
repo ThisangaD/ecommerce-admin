@@ -182,6 +182,7 @@ const start = async () => {
     branding: {
       companyName: 'SHOP ADMIN',
       logo: '/logo.png',
+      favicon: '/logo.png',
       softwareBrothers: false,
       withMadeWithLove: false,
       welcome: 'Welcome to the Premium eCommerce Admin Dashboard',
