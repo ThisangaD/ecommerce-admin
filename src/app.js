@@ -95,6 +95,11 @@ const start = async () => {
     console.error('Unable to connect to the database:', error);
   }
 
+  // Redirect root to admin dashboard
+  app.get('/', (req, res) => {
+    res.redirect('/admin');
+  });
+
   // --- REST API Routes ---
   app.use('/api', authRoutes);
 
