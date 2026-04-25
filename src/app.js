@@ -284,7 +284,6 @@ const start = async () => {
   }
 
   // --- Session Store & Authentication ---
-  const PgSession = ConnectPgSimple(session);
   
   const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
     admin,
