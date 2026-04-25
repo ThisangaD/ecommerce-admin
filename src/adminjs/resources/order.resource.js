@@ -9,6 +9,21 @@ export const OrderResource = {
   resource: Order,
   options: {
     navigation: { name: 'Sales', icon: 'ShoppingCart' },
+    /**
+     * RBAC: Admins see all orders. Users see only their own orders.
+     */
+    filter: {
+      filters: [{
+        name: 'userFilter',
+        condition: ({ currentAdmin }) => {
+          // Admins see all orders; users see only their own
+          if (currentAdmin?.role === 'admin') {
+            return {};
+          }
+          return { userId: currentAdmin?.id };
+        },
+      }],
+    },
     actions: {
       new: {
         isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
