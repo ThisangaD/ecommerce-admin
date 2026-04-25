@@ -65,16 +65,10 @@ const start = async () => {
       resave: false,
       saveUninitialized: true,
       store: new PgSession({
-        conString: process.env.DATABASE_URL || `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-        // In production, we need SSL. In development, we don't.
-        ...(process.env.NODE_ENV === 'production' && {
-          conObject: {
-            ssl: {
-              require: true,
-              rejectUnauthorized: false
-            }
-          }
-        }),
+        conObject: {
+          connectionString: process.env.DATABASE_URL || `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+          ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+        },
         tableName: 'session',
         createTableIfMissing: true,
       }),

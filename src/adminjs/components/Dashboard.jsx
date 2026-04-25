@@ -6,7 +6,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Box, H2, H4, Text, Loader, Icon } from '@adminjs/design-system';
+import { Box, H2, Text, Loader, Icon } from '@adminjs/design-system';
 import { useCurrentAdmin } from 'adminjs';
 
 // ─── Premium Design Tokens ──────────────────────────────────────────────────
