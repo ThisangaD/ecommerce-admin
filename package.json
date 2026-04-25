@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
+    "build": "node src/adminjs/build.js",
     "seed": "node seeders/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -38,5 +39,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
