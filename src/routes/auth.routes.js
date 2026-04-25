@@ -6,7 +6,7 @@
  */
 
 import { Router } from 'express';
-import { User } from '../models/index.js';
+import { User, Setting } from '../models/index.js';
 import { comparePassword } from '../utils/hash.utils.js';
 import { signToken } from '../utils/jwt.utils.js';
 
@@ -56,6 +56,36 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     console.error('[Auth] Login error:', error);
     return res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
+// GET /api/settings — fetch all settings (admin only via AdminJS session; no JWT needed here)
+router.get('/settings', async (req, res) => {
+  try {
+    const settings = await Setting.findAll({ order: [['key', 'ASC']] });
+    res.json(settings);
+  } catch (error) {
+    console.error('[Settings] GET error:', error);
+    res.status(500).json({ message: 'Failed to fetch settings.' });
+  }
+});
+
+// PUT /api/settings/:key — update a single setting value
+router.put('/settings/:key', async (req, res) => {
+  try {
+    const { key } = req.params;
+    const { value } = req.body;
+
+    const setting = await Setting.findOne({ where: { key } });
+    if (!setting) {
+      return res.status(404).json({ message: `Setting '${key}' not found.` });
+    }
+
+    await setting.update({ value });
+    res.json({ message: 'Setting updated successfully.', setting });
+  } catch (error) {
+    console.error('[Settings] PUT error:', error);
+    res.status(500).json({ message: 'Failed to update setting.' });
   }
 });
 

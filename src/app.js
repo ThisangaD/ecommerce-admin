@@ -64,6 +64,40 @@ const start = async () => {
   // --- REST API Routes ---
   app.use('/api', authRoutes);
 
+  // User Dashboard Route — returns recent orders for a specific user
+  app.get('/api/user-dashboard', async (req, res) => {
+    try {
+      const userId = req.query.userId;
+      if (!userId) {
+        return res.status(400).json({ error: 'userId is required' });
+      }
+
+      const user = await User.findByPk(userId, {
+        attributes: ['id', 'name', 'email', 'role', 'createdAt'],
+      });
+
+      const recentOrders = await Order.findAll({
+        where: { userId },
+        limit: 5,
+        order: [['createdAt', 'DESC']],
+      });
+
+      const totalOrders = await Order.count({ where: { userId } });
+      const orders = await Order.findAll({ where: { userId } });
+      const totalSpent = orders.reduce((sum, o) => sum + parseFloat(o.totalAmount || 0), 0);
+
+      res.json({
+        user,
+        recentOrders,
+        totalOrders,
+        totalSpent: totalSpent.toFixed(2),
+      });
+    } catch (error) {
+      console.error('User Dashboard Error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Add Dashboard Stats Route to directly fetch data via Sequelize
   app.get('/api/dashboard-stats', async (req, res) => {
     try {
@@ -221,7 +255,7 @@ const start = async () => {
           connectionString: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
         },
         tableName: 'session',
-        createTableIfMissing: false,
+        createTableIfMissing: true,
       }),
       secret: process.env.SESSION_SECRET || 'secret-password-1234567890',
       cookie: {
@@ -233,13 +267,9 @@ const start = async () => {
 
   app.use(admin.options.rootPath, adminRouter);
 
-  // Error handling middleware to catch and log 500 errors
+  // Error handling middleware
   app.use((err, req, res, next) => {
     console.error('[Server Error]:', err);
-    try {
-      const fs = require('fs');
-      fs.appendFileSync('error.log', new Date().toISOString() + '\\n' + err.stack + '\\n\\n');
-    } catch (e) {}
     res.status(500).send({ error: 'Internal Server Error', details: err.message });
   });
 
