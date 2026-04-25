@@ -37,8 +37,8 @@ section[data-testid="sidebar"] > div:first-child a {
 }
 
 section[data-testid="sidebar"] > div:first-child img {
-  max-width: 160px !important;
-  max-height: 48px !important;
+  max-width: 130px !important;
+  max-height: 38px !important;
   object-fit: contain !important;
 }
 
