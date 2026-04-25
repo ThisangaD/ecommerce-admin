@@ -13,12 +13,15 @@ export const CategoryResource = {
     actions: {
       new: {
         isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
       edit: {
         isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
       delete: {
         isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
     },
   },

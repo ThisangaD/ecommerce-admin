@@ -30,18 +30,28 @@ export const OrderResource = {
           // Both adminjs record.params.userId and currentAdmin.id could be numbers or strings
           return String(record.params.userId) === String(currentAdmin.id);
         },
+        isVisible: ({ currentAdmin, record }) => {
+          if (!currentAdmin) return false;
+          if (currentAdmin.role === 'admin') return true;
+          if (!record) return true;
+          return String(record.params.userId) === String(currentAdmin.id);
+        },
       },
       new: {
         isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
       edit: {
         isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
       delete: {
         isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
       bulkDelete: {
         isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+        isVisible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
     },
   },
