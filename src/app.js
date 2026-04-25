@@ -64,11 +64,42 @@ const start = async () => {
     console.error('Unable to connect to the database:', error);
   }
 
+  // --- Session Store Configuration ---
+  const PgSession = ConnectPgSimple(session);
+  const sessionMiddleware = session({
+    resave: false,
+    saveUninitialized: true,
+    store: new PgSession({
+      conObject: {
+        connectionString: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+      },
+      tableName: 'session',
+      createTableIfMissing: true,
+    }),
+    secret: process.env.SESSION_SECRET || 'secret-password-1234567890',
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    },
+  });
+
+  app.use(sessionMiddleware);
+
+  /**
+   * Middleware to ensure the user is authenticated via AdminJS.
+   */
+  const ensureAuthenticated = (req, res, next) => {
+    if (req.session && req.session.adminUser) {
+      return next();
+    }
+    res.status(401).json({ error: 'Unauthorized: Please log in to the Admin panel.' });
+  };
+
   // --- REST API Routes ---
   app.use('/api', authRoutes);
 
   // User Dashboard Route — returns recent orders for a specific user
-  app.get('/api/user-dashboard', async (req, res) => {
+  app.get('/api/user-dashboard', ensureAuthenticated, async (req, res) => {
     try {
       const userId = req.query.userId;
       if (!userId) {
@@ -102,7 +133,7 @@ const start = async () => {
   });
 
   // Add Dashboard Stats Route to directly fetch data via Sequelize
-  app.get('/api/dashboard-stats', async (req, res) => {
+  app.get('/api/dashboard-stats', ensureAuthenticated, async (req, res) => {
     try {
       const totalUsers = await User.count();
       const totalOrders = await Order.count();
@@ -125,6 +156,7 @@ const start = async () => {
       const salesChartData = [];
       for (let i = 5; i >= 0; i--) {
         const d = new Date();
+        d.setDate(1); // Avoid month skipping on 31st
         d.setMonth(d.getMonth() - i);
         const monthName = monthNames[d.getMonth()];
         salesChartData.push({
@@ -143,7 +175,9 @@ const start = async () => {
       const statusStats = [
         { status: 'delivered', percentage: Math.round(((statusCounts['delivered'] || 0) / totalOrderCount) * 100) },
         { status: 'shipped', percentage: Math.round(((statusCounts['shipped'] || 0) / totalOrderCount) * 100) },
+        { status: 'processing', percentage: Math.round(((statusCounts['processing'] || 0) / totalOrderCount) * 100) },
         { status: 'pending', percentage: Math.round(((statusCounts['pending'] || 0) / totalOrderCount) * 100) },
+        { status: 'cancelled', percentage: Math.round(((statusCounts['cancelled'] || 0) / totalOrderCount) * 100) },
       ];
 
       const recentOrders = await Order.findAll({
@@ -256,21 +290,12 @@ const start = async () => {
       cookiePassword: process.env.SESSION_SECRET || 'secret-password-1234567890',
     },
     null,
-    {
-      resave: false,
-      saveUninitialized: true,
-      store: new PgSession({
-        conObject: {
-          connectionString: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-        },
-        tableName: 'session',
-        createTableIfMissing: true,
-      }),
-      secret: process.env.SESSION_SECRET || 'secret-password-1234567890',
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-      },
+    // Pass null or a simple object since session is already handled by app.use(sessionMiddleware)
+    // AdminJSExpress will still use the session for its internal state
+    { 
+      resave: false, 
+      saveUninitialized: true, 
+      secret: process.env.SESSION_SECRET || 'secret-password-1234567890' 
     }
   );
 
