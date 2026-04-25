@@ -27,7 +27,7 @@ import { OrderItemResource } from './adminjs/resources/orderItem.resource.js';
 import { SettingResource } from './adminjs/resources/setting.resource.js';
 
 import { adminAuthenticate } from './adminjs/auth.handler.js';
-import authRoutes from './routes/auth.routes.js';
+import authRoutes, { requireAdmin } from './routes/auth.routes.js';
 
 dotenv.config();
 
@@ -60,6 +60,28 @@ const start = async () => {
     console.log('Database connection has been established successfully.');
     await sequelize.sync();
 
+    // --- Session Store Configuration ---
+    const PgSession = ConnectPgSimple(session);
+    const sessionConfig = {
+      resave: false,
+      saveUninitialized: true,
+      store: new PgSession({
+        conObject: {
+          connectionString: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+        },
+        tableName: 'session',
+        createTableIfMissing: true,
+      }),
+      secret: process.env.SESSION_SECRET || 'secret-password-1234567890',
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+      },
+    };
+
+    // Apply session globally so /api routes can access it
+    app.use(session(sessionConfig));
+
     // Serve static files from public directory
     app.use(express.static(path.join(__dirname, '../public')));
   } catch (error) {
@@ -70,7 +92,7 @@ const start = async () => {
   app.use('/api', authRoutes);
 
   // User Dashboard Route — returns recent orders for a specific user
-  app.get('/api/user-dashboard', async (req, res) => {
+  app.get('/api/user-dashboard', requireAdmin, async (req, res) => {
     try {
       const userId = req.query.userId;
       if (!userId) {
@@ -104,7 +126,7 @@ const start = async () => {
   });
 
   // Add Dashboard Stats Route to directly fetch data via Sequelize
-  app.get('/api/dashboard-stats', async (req, res) => {
+  app.get('/api/dashboard-stats', requireAdmin, async (req, res) => {
     try {
       const totalUsers = await User.count();
       const totalOrders = await Order.count();
@@ -266,23 +288,7 @@ const start = async () => {
       cookieName: 'adminjs',
       cookiePassword: process.env.SESSION_SECRET || 'secret-password-1234567890',
     },
-    null,
-    {
-      resave: false,
-      saveUninitialized: true,
-      store: new PgSession({
-        conObject: {
-          connectionString: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-        },
-        tableName: 'session',
-        createTableIfMissing: true,
-      }),
-      secret: process.env.SESSION_SECRET || 'secret-password-1234567890',
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-      },
-    }
+    null, // Use the global session middleware instead of defining a new one here
   );
 
   app.use(admin.options.rootPath, adminRouter);

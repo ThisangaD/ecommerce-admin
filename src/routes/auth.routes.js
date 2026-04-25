@@ -60,25 +60,35 @@ router.post('/login', async (req, res) => {
 });
 
 /**
- * Middleware to verify JWT and ensure the user is an admin.
+ * Middleware to verify access.
+ * Supports both JWT (for external calls) and Session (for AdminJS dashboard).
  */
-const requireAdmin = (req, res, next) => {
+export const requireAdmin = (req, res, next) => {
+  // 1. Check for JWT in Authorization header
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Unauthorized: No token provided.' });
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1];
+    try {
+      const decoded = verifyToken(token);
+      if (decoded.role === 'admin') {
+        req.user = decoded;
+        return next();
+      }
+      return res.status(403).json({ message: 'Forbidden: Admin access required.' });
+    } catch (error) {
+      return res.status(401).json({ message: 'Unauthorized: Invalid token.' });
+    }
   }
 
-  const token = authHeader.split(' ')[1];
-  try {
-    const decoded = verifyToken(token);
-    if (decoded.role !== 'admin') {
-      return res.status(403).json({ message: 'Forbidden: Admin access required.' });
-    }
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(401).json({ message: 'Unauthorized: Invalid or expired token.' });
+  // 2. Fallback: Check for AdminJS session (for calls from custom dashboard components)
+  // AdminJS stores the user in req.session.adminUser in buildAuthenticatedRouter
+  const sessionUser = req.session?.adminUser;
+  if (sessionUser && sessionUser.role === 'admin') {
+    req.user = sessionUser;
+    return next();
   }
+
+  return res.status(401).json({ message: 'Unauthorized: Authentication required.' });
 };
 
 // GET /api/settings — fetch all settings (admin only)
