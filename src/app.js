@@ -179,6 +179,7 @@ const start = async () => {
     ],
     branding: {
       companyName: 'SHOP ADMIN',
+      logo: '/logo.png',
       softwareBrothers: false,
       withMadeWithLove: false,
       theme: {

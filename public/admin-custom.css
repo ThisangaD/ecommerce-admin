@@ -36,6 +36,12 @@ section[data-testid="sidebar"] > div:first-child a {
   display: block !important;
 }
 
+section[data-testid="sidebar"] > div:first-child img {
+  max-width: 160px !important;
+  max-height: 48px !important;
+  object-fit: contain !important;
+}
+
 /* Navigation Group Labels (e.g., CATALOG, SALES) */
 section[data-testid="sidebar"] .adminjs_Label {
   font-size: 11px !important;
