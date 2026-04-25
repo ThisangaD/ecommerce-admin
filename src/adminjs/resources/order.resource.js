@@ -9,22 +9,28 @@ export const OrderResource = {
   resource: Order,
   options: {
     navigation: { name: 'Sales', icon: 'ShoppingCart' },
-    /**
-     * RBAC: Admins see all orders. Users see only their own orders.
-     */
-    filter: {
-      filters: [{
-        name: 'userFilter',
-        condition: ({ currentAdmin }) => {
-          // Admins see all orders; users see only their own
-          if (currentAdmin?.role === 'admin') {
-            return {};
-          }
-          return { userId: currentAdmin?.id };
-        },
-      }],
-    },
     actions: {
+      list: {
+        before: async (request, context) => {
+          const { currentAdmin } = context;
+          if (currentAdmin && currentAdmin.role !== 'admin') {
+            request.query = {
+              ...request.query,
+              'filters.userId': currentAdmin.id,
+            };
+          }
+          return request;
+        },
+      },
+      show: {
+        isAccessible: ({ currentAdmin, record }) => {
+          if (!currentAdmin) return false;
+          if (currentAdmin.role === 'admin') return true;
+          if (!record) return true;
+          // Both adminjs record.params.userId and currentAdmin.id could be numbers or strings
+          return String(record.params.userId) === String(currentAdmin.id);
+        },
+      },
       new: {
         isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
@@ -32,6 +38,9 @@ export const OrderResource = {
         isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
       delete: {
+        isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
+      },
+      bulkDelete: {
         isAccessible: ({ currentAdmin }) => currentAdmin?.role === 'admin',
       },
     },

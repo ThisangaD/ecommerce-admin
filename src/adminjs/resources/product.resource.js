@@ -12,7 +12,7 @@ export const ProductResource = {
     navigation: { name: 'Catalog', icon: 'Package' },
     properties: {
       categoryId: {
-        reference: 'Category',
+        reference: 'categories',
       },
     },
     actions: {
