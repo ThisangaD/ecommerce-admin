@@ -36,10 +36,12 @@ section[data-testid="sidebar"] > div:first-child a {
   display: block !important;
 }
 
+/* Sidebar Logo Image */
 section[data-testid="sidebar"] > div:first-child img {
   max-width: 130px !important;
-  max-height: 38px !important;
+  max-height: 36px !important;
   object-fit: contain !important;
+  margin-bottom: 8px !important;
 }
 
 /* Navigation Group Labels (e.g., CATALOG, SALES) */

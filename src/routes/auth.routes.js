@@ -59,12 +59,9 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// GET /api/settings — fetch all settings (admin only)
+// GET /api/settings — fetch all settings (admin only via AdminJS session; no JWT needed here)
 router.get('/settings', async (req, res) => {
   try {
-    if (!req.session?.adminUser || req.session.adminUser.role !== 'admin') {
-      return res.status(403).json({ message: 'Forbidden: Admin access required.' });
-    }
     const settings = await Setting.findAll({ order: [['key', 'ASC']] });
     res.json(settings);
   } catch (error) {
@@ -73,12 +70,9 @@ router.get('/settings', async (req, res) => {
   }
 });
 
-// PUT /api/settings/:key — update a single setting value (admin only)
+// PUT /api/settings/:key — update a single setting value
 router.put('/settings/:key', async (req, res) => {
   try {
-    if (!req.session?.adminUser || req.session.adminUser.role !== 'admin') {
-      return res.status(403).json({ message: 'Forbidden: Admin access required.' });
-    }
     const { key } = req.params;
     const { value } = req.body;
 

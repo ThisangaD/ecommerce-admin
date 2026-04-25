@@ -43,6 +43,8 @@ const Components = {
   Settings: componentLoader.add('Settings', path.join(__dirname, './adminjs/components/Settings.jsx')),
 };
 
+componentLoader.override('Login', path.join(__dirname, './adminjs/components/Login.jsx'));
+
 const PORT = process.env.PORT || 3000;
 
 /**
@@ -64,42 +66,11 @@ const start = async () => {
     console.error('Unable to connect to the database:', error);
   }
 
-  // --- Session Store Configuration ---
-  const PgSession = ConnectPgSimple(session);
-  const sessionMiddleware = session({
-    resave: false,
-    saveUninitialized: true,
-    store: new PgSession({
-      conObject: {
-        connectionString: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-      },
-      tableName: 'session',
-      createTableIfMissing: true,
-    }),
-    secret: process.env.SESSION_SECRET || 'secret-password-1234567890',
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-    },
-  });
-
-  app.use(sessionMiddleware);
-
-  /**
-   * Middleware to ensure the user is authenticated via AdminJS.
-   */
-  const ensureAuthenticated = (req, res, next) => {
-    if (req.session && req.session.adminUser) {
-      return next();
-    }
-    res.status(401).json({ error: 'Unauthorized: Please log in to the Admin panel.' });
-  };
-
   // --- REST API Routes ---
   app.use('/api', authRoutes);
 
   // User Dashboard Route — returns recent orders for a specific user
-  app.get('/api/user-dashboard', ensureAuthenticated, async (req, res) => {
+  app.get('/api/user-dashboard', async (req, res) => {
     try {
       const userId = req.query.userId;
       if (!userId) {
@@ -133,7 +104,7 @@ const start = async () => {
   });
 
   // Add Dashboard Stats Route to directly fetch data via Sequelize
-  app.get('/api/dashboard-stats', ensureAuthenticated, async (req, res) => {
+  app.get('/api/dashboard-stats', async (req, res) => {
     try {
       const totalUsers = await User.count();
       const totalOrders = await Order.count();
@@ -156,7 +127,6 @@ const start = async () => {
       const salesChartData = [];
       for (let i = 5; i >= 0; i--) {
         const d = new Date();
-        d.setDate(1); // Avoid month skipping on 31st
         d.setMonth(d.getMonth() - i);
         const monthName = monthNames[d.getMonth()];
         salesChartData.push({
@@ -175,9 +145,7 @@ const start = async () => {
       const statusStats = [
         { status: 'delivered', percentage: Math.round(((statusCounts['delivered'] || 0) / totalOrderCount) * 100) },
         { status: 'shipped', percentage: Math.round(((statusCounts['shipped'] || 0) / totalOrderCount) * 100) },
-        { status: 'processing', percentage: Math.round(((statusCounts['processing'] || 0) / totalOrderCount) * 100) },
         { status: 'pending', percentage: Math.round(((statusCounts['pending'] || 0) / totalOrderCount) * 100) },
-        { status: 'cancelled', percentage: Math.round(((statusCounts['cancelled'] || 0) / totalOrderCount) * 100) },
       ];
 
       const recentOrders = await Order.findAll({
@@ -216,6 +184,7 @@ const start = async () => {
       logo: '/logo.png',
       softwareBrothers: false,
       withMadeWithLove: false,
+      welcome: 'Welcome to the Premium eCommerce Admin Dashboard',
       theme: {
         colors: {
           primary100: '#4F46E5', // Indigo 600
@@ -251,21 +220,28 @@ const start = async () => {
       },
     },
     locale: {
+      language: 'en',
       translations: {
-        labels: {
-          users: 'Users',
-          categories: 'Categories',
-          products: 'Products',
-          orders: 'Orders',
-          order_items: 'Order Items',
-          settings: 'Manage Settings Data',
-          System: 'System',
-          Catalog: 'Catalog',
-          Sales: 'Sales',
-          'User Management': 'User Management',
-        },
-        pages: {
-          Settings: 'System Settings',
+        en: {
+          labels: {
+            users: 'Users',
+            categories: 'Categories',
+            products: 'Products',
+            orders: 'Orders',
+            order_items: 'Order Items',
+            settings: 'Manage Settings Data',
+            System: 'System',
+            Catalog: 'Catalog',
+            Sales: 'Sales',
+            'User Management': 'User Management',
+          },
+          messages: {
+            welcome: 'Welcome to the Premium eCommerce Admin Dashboard.',
+            loginWelcome: 'Welcome to the Premium eCommerce Admin Dashboard. Securely manage your store inventory, track sales, and oversee user activity in one central hub.',
+          },
+          pages: {
+            Settings: 'System Settings',
+          },
         },
       },
     },
@@ -290,12 +266,21 @@ const start = async () => {
       cookiePassword: process.env.SESSION_SECRET || 'secret-password-1234567890',
     },
     null,
-    // Pass null or a simple object since session is already handled by app.use(sessionMiddleware)
-    // AdminJSExpress will still use the session for its internal state
-    { 
-      resave: false, 
-      saveUninitialized: true, 
-      secret: process.env.SESSION_SECRET || 'secret-password-1234567890' 
+    {
+      resave: false,
+      saveUninitialized: true,
+      store: new PgSession({
+        conObject: {
+          connectionString: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+        },
+        tableName: 'session',
+        createTableIfMissing: true,
+      }),
+      secret: process.env.SESSION_SECRET || 'secret-password-1234567890',
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+      },
     }
   );
 
