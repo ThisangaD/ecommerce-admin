@@ -346,7 +346,7 @@ const AdminDashboard = () => {
   const statusColors = ['#10B981', '#3B82F6', '#F59E0B', '#F43F5E'];
 
   return (
-    <Box style={pageStyle}>
+    <Box className="dashboard-page" style={pageStyle}>
       {/* ── Gradient Header ── */}
       <Box style={headerGradient}>
         <Box style={headerOverlay} />
@@ -521,7 +521,7 @@ const UserDashboard = ({ currentAdmin }) => {
   if (loading) return <LoadingScreen />;
 
   return (
-    <Box style={pageStyle}>
+    <Box className="dashboard-page" style={pageStyle}>
       {/* ── Gradient Header ── */}
       <Box style={{ ...headerGradient, background: 'linear-gradient(135deg, #0EA5E9 0%, #6366F1 50%, #8B5CF6 100%)' }}>
         <Box style={headerOverlay} />

@@ -159,3 +159,90 @@ section[data-testid="sidebar"] ::-webkit-scrollbar-thumb {
 section[data-testid="sidebar"] ::-webkit-scrollbar-thumb:hover {
   background: #CBD5E1;
 }
+
+/* --- LOGIN PAGE PATTERN --- */
+.circuit-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  background-color: #F8FAFC;
+}
+
+.circuit-background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 19px,
+      rgba(75, 85, 99, 0.08) 19px,
+      rgba(75, 85, 99, 0.08) 20px,
+      transparent 20px,
+      transparent 39px,
+      rgba(75, 85, 99, 0.08) 39px,
+      rgba(75, 85, 99, 0.08) 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 19px,
+      rgba(75, 85, 99, 0.08) 19px,
+      rgba(75, 85, 99, 0.08) 20px,
+      transparent 20px,
+      transparent 39px,
+      rgba(75, 85, 99, 0.08) 39px,
+      rgba(75, 85, 99, 0.08) 40px
+    ),
+    radial-gradient(
+      circle at 20px 20px,
+      rgba(55, 65, 81, 0.12) 2px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 40px 40px,
+      rgba(55, 65, 81, 0.12) 2px,
+      transparent 2px
+    );
+  background-size:
+    40px 40px,
+    40px 40px,
+    40px 40px,
+    40px 40px;
+}
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 768px) {
+  /* Login Page Mobile Stacking */
+  .login-card-inner {
+    flex-direction: column !important;
+    width: 95% !important;
+    min-height: auto !important;
+    margin: 20px 0 !important;
+  }
+  .login-left-panel, .login-right-panel {
+    flex: none !important;
+    width: 100% !important;
+  }
+  .login-left-panel {
+    padding: 30px 20px !important;
+  }
+  .login-right-panel {
+    padding: 40px 20px !important;
+  }
+
+  /* Adjust Dashboard Padding */
+  .dashboard-page {
+    padding: 20px !important;
+  }
+  
+  /* Shrink Login Logo on Mobile */
+  .login-left-panel img {
+    max-width: 240px !important;
+    max-height: 100px !important;
+  }
+}

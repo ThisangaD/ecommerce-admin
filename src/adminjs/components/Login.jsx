@@ -6,29 +6,26 @@ const Login = (props) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <Box
-      style={{
-        display: 'flex',
-        minHeight: '100vh',
-        backgroundColor: '#F8FAFC',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <div className="circuit-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="circuit-background"></div>
       <Box
+        className="login-card-inner"
         style={{
+          position: 'relative', // Ensure the form sits above the absolute background
+          zIndex: 1,
           display: 'flex',
           backgroundColor: '#FFFFFF',
           borderRadius: '20px',
           boxShadow: '0 10px 25px rgba(0,0,0,0.05)',
           overflow: 'hidden',
           width: '900px',
-          maxWidth: '100%',
+          maxWidth: '95%',
           minHeight: '500px',
         }}
       >
         {/* Left Side: Branding / Welcome */}
         <Box
+          className="login-left-panel"
           style={{
             flex: 1,
             backgroundColor: '#4F46E5',
@@ -48,20 +45,24 @@ const Login = (props) => {
               maxWidth: '320px', 
               maxHeight: '140px',
               objectFit: 'contain',
-              marginBottom: '32px' 
+              marginBottom: '32px',
+              marginLeft: '10px'
             }} 
           />
-          <H2 style={{ color: '#FFFFFF', fontWeight: '800', marginBottom: '20px' }}>
-            Premium Admin
-          </H2>
-          <Text style={{ fontSize: '16px', lineHeight: '1.6', opacity: 0.9 }}>
-            Welcome to your eCommerce dashboard. Please sign in to securely manage your inventory, process orders, and oversee user activity.
-          </Text>
+          <div style={{ transform: 'translateY(-15px)' }}>
+            <H2 style={{ color: '#FFFFFF', fontWeight: '800', marginBottom: '20px' }}>
+              Premium Admin
+            </H2>
+            <Text style={{ fontSize: '16px', lineHeight: '1.6', opacity: 0.9 }}>
+              Welcome to your eCommerce dashboard. Please sign in to securely manage your inventory, process orders, and oversee user activity.
+            </Text>
+          </div>
         </Box>
 
         {/* Right Side: Login Form */}
         <Box
           as="form"
+          className="login-right-panel"
           action={action}
           method="POST"
           style={{
@@ -147,7 +148,7 @@ const Login = (props) => {
           </Button>
         </Box>
       </Box>
-    </Box>
+    </div>
   );
 };
 
