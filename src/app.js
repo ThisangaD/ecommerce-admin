@@ -36,15 +36,6 @@ const __dirname = path.dirname(__filename);
 
 AdminJS.registerAdapter(AdminJSSequelize);
 
-const componentLoader = new ComponentLoader();
-
-const Components = {
-  Dashboard: componentLoader.add('Dashboard', path.join(__dirname, './adminjs/components/Dashboard.jsx')),
-  Settings: componentLoader.add('Settings', path.join(__dirname, './adminjs/components/Settings.jsx')),
-};
-
-componentLoader.override('Login', path.join(__dirname, './adminjs/components/Login.jsx'));
-
 const PORT = process.env.PORT || 3000;
 
 /**
@@ -53,6 +44,14 @@ const PORT = process.env.PORT || 3000;
 const start = async () => {
   const app = express();
   app.use(express.json());
+
+  // --- AdminJS Component Loading ---
+  const componentLoader = new ComponentLoader();
+  const Components = {
+    Dashboard: componentLoader.add('Dashboard', path.join(__dirname, './adminjs/components/Dashboard.jsx')),
+    Settings: componentLoader.add('Settings', path.join(__dirname, './adminjs/components/Settings.jsx')),
+  };
+  componentLoader.override('Login', path.join(__dirname, './adminjs/components/Login.jsx'));
 
   // --- Database Connection & Synchronization ---
   try {
